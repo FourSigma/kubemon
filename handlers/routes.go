@@ -28,7 +28,7 @@ func GetRoutes(client *kubernetes.Clientset) *mux.Router {
 	r.HandleFunc("/pods", wh.DeleteAllPodsHandler).Methods("OPTIONS")      //Delete Pods
 	r.HandleFunc("/pods/{id}", wh.DeletePodByIdHandler).Methods("OPTIONS") //Delete Pod by Id
 	r.HandleFunc("/pods/{id}/logs", wh.PodLogHandler)
-	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("static/"))))
+	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("dist/"))))
 	return r
 }
 
