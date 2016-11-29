@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"k8s.io/client-go/1.4/pkg/api/v1"
 )
@@ -38,8 +37,6 @@ func (p *Pod) MarshalJSON() (b []byte, err error) {
 		Status:    p.Status.Phase,
 		CreatedAt: p.GetCreationTimestamp().String(),
 	}
-
-	fmt.Println(p.GetName())
 
 	return json.Marshal(s)
 }

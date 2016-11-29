@@ -2,13 +2,15 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/FourSigma/kubemon/handlers"
 
 	"k8s.io/client-go/1.4/kubernetes"
 	"k8s.io/client-go/1.4/tools/clientcmd"
+
+	ghandlers "github.com/gorilla/handlers"
 )
 
 var (
@@ -20,24 +22,18 @@ func main() {
 	// uses the current context in kubeconfig
 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
 	if err != nil {
-		panic(err.Error())
+		log.Fatal(err)
 	}
+	log.Println("KubeConfig loaded....")
 
 	// creates the clientset
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		panic(err.Error())
+		log.Fatal(err)
 	}
+	log.Println("Client init....")
 
-	// for {
-	// 	pods, err := clientset.Core().Pods(api.NamespaceDefault).List(api.ListOptions{})
-	// 	if err != nil {
-	// 		panic(err.Error())
-	// 	}
-	// 	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
-	// 	time.Sleep(time.Millisecond)
-	// }
-	fmt.Println("Starting server -- http://localhost:" + "9180")
-	http.ListenAndServe(":9180", handlers.GetRoutes(clientset))
+	log.Println("Starting server -- http://localhost:" + "9180")
+	http.ListenAndServe(":9180", ghandlers.CORS(ghandlers.IgnoreOptions())(handlers.GetRoutes(clientset)))
 
 }
